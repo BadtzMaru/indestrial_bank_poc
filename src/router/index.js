@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Plugin from '@/components/Plugin.vue';
+import Password from '@/components/Password.vue';
 
 Vue.use(VueRouter);
 
@@ -16,7 +17,12 @@ const routes = [
 				path: '/plugin',
 				name: 'Plugin',
 				component: Plugin,
-			}
+			},
+			{
+				path: '/password',
+				name: 'Password',
+				component: Password,
+			},
 		]
 	},
 ];

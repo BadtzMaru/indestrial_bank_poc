@@ -6,16 +6,16 @@
 			<div class="page-arrows"></div>
 			<!-- 主要区域 -->
 			<div class="flex-1">
-				<div class="page-title">请插入银行卡</div>
-				<div class="d-flex a-center j-center pt-4">
-					<img src="../assets/img/bank_card.jpg" class="plugin_card" draggable="false">
+				<div class="page-title"></div>
+				<div class="d-flex a-center j-center" style="padding-top: 80px;">
+					<img src="../assets/img/pos_password.png" class="posPassword" draggable="false">
 				</div>
 			</div>
 			<div class="flex-1">
-				<div class="page-title">或手动输入卡号</div>
+				<div class="page-title">请输入密码</div>
 				<el-form :model="form" status-icon ref="ruleForm" :rules="rules">
-					<el-form-item class="d-flex j-center" prop="cardID">
-						<el-input prefix-icon="el-icon-bank-card" v-model="form.cardID" style="width: 350px;font-size: 23px;"></el-input>
+					<el-form-item class="d-flex j-center" prop="password">
+						<el-input type="password" @input="handleIptChange" prefix-icon="el-icon-lock" v-model="form.password" style="width: 350px;font-size: 23px;"></el-input>
 					</el-form-item>
 				</el-form>
 				<number-keybord @nk_clearup="handleClearup" @nk_keypress="handleKeypress" @nk_del="handleDel"></number-keybord>
@@ -36,61 +36,52 @@
 			numberKeybord,
 		},
 		data() {
-			var validateCardID = (rule,value,callback)=>{
+			var validatePassword = (rule,value,callback)=>{
 				if (value === ''){
-					return callback(new Error('银行卡不能为空'));
+					return callback(new Error('密码不能为空'));
 				}
-				if (!/^(\d{16}|\d{19})$/.test(value)){
-					return callback(new Error('银行卡为16或19位的数字'));
+				if (!/^\d{6}$/.test(value)){
+					return callback(new Error('密码为6数字'));
 				}
 				callback();
 			};
 			return {
 				form: {
-					cardID: '',
+					password: '',
 				},
 				rules: {
-					cardID: [
-						{validator:validateCardID,trigger: 'change'}
+					password: [
+						{validator:validatePassword,trigger: 'change'}
 					]
 				},
 			};
 		},
 		methods: {
 			handleKeypress(e) {
-				if (this.form.cardID.length<19) {
-					this.form.cardID += e;
+				if (this.form.password.length<6) {
+					this.form.password += e;
 				} else {
 					this.$message({
-						message: '银行卡不能超过19位',
+						message: '密码不能超过6位',
 						type: 'warning',
 					});
 				}
 			},
 			handleDel() {
-				this.form.cardID = this.form.cardID.substr(0,this.form.cardID.length-1);
+				this.form.password = this.form.password.substr(0,this.form.password.length-1);
 			},
 			handleClearup() {
-				this.form.cardID = '';
+				this.form.password = '';
 			},
-		}
-	}
+			handleIptChange() {
+				this.form.password = this.form.password.replace(/\D/g,'');
+			}
+		},
+	};
 </script>
 
 <style lang="less">
-	.plugin_card{
-		width: 200px;
-		position: relative;
-		animation: card 2.5s linear infinite;
-	}
-	@keyframes card{
-		from {
-			top: 50px;
-			opacity: 0;
-		}
-		to{
-			top: 0px;
-			opacity: 1;
-		}
+	.posPassword{
+		width: 80%;
 	}
 </style>
