@@ -20,10 +20,29 @@
 	*{
 		user-select: none;
 	}
+	::-webkit-scrollbar-track
+	{
+		background: rgba(0,0,0,.1);
+		border-radius: 0;
+	}
+	::-webkit-scrollbar
+	{
+		-webkit-appearance: none;
+		width: 10px;
+		height: 10px;
+	}
+	::-webkit-scrollbar-thumb
+	{
+		cursor: pointer;
+		border-radius: 5px;
+		background: rgba(0,0,0,.25);
+		transition: color .2s ease;
+	}
 	.page-wrapper{
 		background-color: rgb(232,230,232);
 		height: 520px;
 		position: relative;
+		overflow: auto;
 	}
 	.btn-wrapper{
 		background-color: rgb(148,154,181);
@@ -56,6 +75,13 @@
 			background-color: rgba(82,93,156,0.7);
 		}
 	}
+	.stepBtn-danger{
+		background-color: rgb(85,112,138);
+		color: #FFFFFF;
+		&:hover{
+			background-color: rgba(85,112,138,0.7);
+		}
+	}
 	.page-arrows{
 		position: absolute;
 		box-sizing: content-box;
@@ -74,5 +100,31 @@
 		font-size: 25px;
 		padding-top: 20px;
 		padding-bottom: 20px;
+	}
+	.step-msg{
+		color: #FFFFFF;
+		font-size: 22px;
+		letter-spacing: 3px;
+	}
+	.tool-bar{
+		display: flex;
+		align-items: center;
+		background-color: rgb(255,255,255);
+		box-shadow: 0px 10px 10px #ccc;
+		height: 40px;
+		padding-left: 30px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		&>i{
+			font-size: 23px;
+			cursor: pointer;
+			transition: all .3s;
+			margin-right: 15px;
+			&:hover{
+				color: rgb(65,165,238);
+			}
+		}
 	}
 </style>

@@ -50,6 +50,7 @@
 						<div class="step-item">
 							<div class="step-top-wrapper" >
 								<div class="step-circle setp-ing">3</div>
+								<img src="../assets/img/step-loading.png" class="step-loading-img" draggable="false">
 							</div>
 							<div class="step-text step-text-ing">读取身份</div>
 						</div>
@@ -174,7 +175,6 @@ export default {
 	}
 	.setp-ing{
 		color: rgb(40,167,69);
-		border: 3px solid rgb(40,167,69);
 	}
 	.setp-wait{
 		color: rgb(201,205,223);
@@ -196,5 +196,17 @@ export default {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+	.step-loading-img{
+		position: absolute;
+		width: 94%;
+		animation: turn 2s linear infinite;
+	}
+	@keyframes turn{
+		0%{-webkit-transform:rotate(0deg);}
+		25%{-webkit-transform:rotate(90deg);}
+		50%{-webkit-transform:rotate(180deg);}
+		75%{-webkit-transform:rotate(270deg);}
+		100%{-webkit-transform:rotate(360deg);}
 	}
 </style>
