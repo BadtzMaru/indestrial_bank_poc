@@ -23,14 +23,15 @@
 		</div>
 		<!-- 按钮区域 -->
 		<div class="btn-wrapper d-flex j-sb a-center" style="padding-left: 70px;padding-right: 70px;">
-			<div class="stepBtn stepBtn-disable">重新获取</div>
-			<div class="stepBtn stepBtn-primary">确定</div>
+			<div class="stepBtn" :class="ruleFlag?'stepBtn-danger':'stepBtn-disable'" @click="resetIdentity">重新输入</div>
+			<div class="stepBtn" :class="ruleFlag?'stepBtn-primary':'stepBtn-disable'" @click="nextStep">确定</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import numberKeybord from '@/components/number_keybord.vue';
+	import {mapMutations} from 'vuex';
 	export default {
 		components: {
 			numberKeybord,
@@ -54,9 +55,11 @@
 						{validator:validateIdentity,trigger: 'change'}
 					]
 				},
+				ruleFlag: false,
 			};
 		},
 		methods: {
+			...mapMutations(['changeCountDown','changeIdentity','changeNowStep']),
 			handleKeypress(e) {
 				if (this.form.identity.length<18) {
 					this.form.identity += e;
@@ -66,17 +69,39 @@
 						type: 'warning',
 					});
 				}
+				this.doReg();
 			},
 			handleDel() {
 				this.form.identity = this.form.identity.substr(0,this.form.identity.length-1);
+				this.doReg();
 			},
 			handleClearup() {
 				this.form.identity = '';
+				this.doReg();
 			},
 			handleIptChange() {
+				if (this.form.identity.length> 18) this.form.identity = this.form.identity.substr(0,18);
 				this.form.identity = this.form.identity.replace(/[^\dXx]/g,'');
 				this.form.identity = this.form.identity.replace(/x/g,'X');
-			}
+				this.doReg();
+			},
+			doReg() {
+				if (/^\d{17}[\dX]$/.test(this.form.identity)) {
+					this.ruleFlag = true;
+				} else {
+					this.ruleFlag = false;
+				}
+			},
+			resetIdentity() {
+				this.form.identity = '';
+				this.doReg();
+			},
+			nextStep() {
+				this.changeIdentity(this.form.identity);
+				this.changeCountDown(120);
+				this.changeNowStep(4);
+				this.$router.push('/contract');
+			},
 		},
 	};
 </script>

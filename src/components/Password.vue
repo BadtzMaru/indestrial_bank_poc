@@ -23,14 +23,15 @@
 		</div>
 		<!-- 按钮区域 -->
 		<div class="btn-wrapper d-flex j-sb a-center" style="padding-left: 70px;padding-right: 70px;">
-			<div class="stepBtn stepBtn-disable">重新获取</div>
-			<div class="stepBtn stepBtn-primary">确定</div>
+			<div class="stepBtn stepBtn-danger" @click="resetPassword">重新输入</div>
+			<div class="stepBtn " :class="ruleFlag?'stepBtn-primary':'stepBtn-disable'" @click="nextStep">确定</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import numberKeybord from '@/components/number_keybord.vue';
+	import {mapMutations} from 'vuex';
 	export default {
 		components: {
 			numberKeybord,
@@ -54,9 +55,11 @@
 						{validator:validatePassword,trigger: 'change'}
 					]
 				},
+				ruleFlag: false,
 			};
 		},
 		methods: {
+			...mapMutations(['changePassword','changeCountDown','changeNowStep']),
 			handleKeypress(e) {
 				if (this.form.password.length<6) {
 					this.form.password += e;
@@ -65,17 +68,46 @@
 						message: '密码不能超过6位',
 						type: 'warning',
 					});
-				}
+				};
+				this.doReg();
 			},
 			handleDel() {
 				this.form.password = this.form.password.substr(0,this.form.password.length-1);
+				this.doReg();
 			},
 			handleClearup() {
 				this.form.password = '';
+				this.doReg();
 			},
 			handleIptChange() {
+				if (this.form.password.length>6) this.form.password = this.form.password.substr(0,6);
 				this.form.password = this.form.password.replace(/\D/g,'');
-			}
+				this.doReg();
+			},
+			doReg() {
+				if (/^\d{6}$/.test(this.form.password)) {
+					this.ruleFlag = true;
+				} else {
+					this.ruleFlag = false;
+				}
+			},
+			resetPassword() {
+				this.form.password = '';
+				this.doReg();
+			},
+			nextStep() {
+				if (!this.ruleFlag) {
+					this.$message({
+						message: '密码为6位数字',
+						type: 'warning',
+					});
+				} else {
+					this.changePassword(this.form.password);
+					this.changeCountDown(120);
+					this.changeNowStep(3);
+					this.$router.push('/identity');
+				}
+			},
 		},
 	};
 </script>

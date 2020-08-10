@@ -23,9 +23,8 @@
 		</div>
 		<!-- 按钮区域 -->
 		<div class="btn-wrapper d-flex j-sb a-center" style="padding-left: 70px;padding-right: 70px;">
-			<div class="stepBtn stepBtn-danger" @click="disagree">不同意</div>
-			<div class="step-msg">请仔细阅读以上合约/协议/须知</div>
-			<div class="stepBtn stepBtn-primary" @click="agree">同意</div>
+			<div class="stepBtn stepBtn-danger">打印</div>
+			<div class="stepBtn stepBtn-primary" @click="nextStep">确定</div>
 		</div>
 		<!-- 条约弹出层 -->
 		<el-dialog title="条约预览" :visible.sync="dialogVisible" :modal-append-to-body="false">
@@ -36,11 +35,21 @@
 				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
 			</div>
 		</el-dialog>
+		<!-- 等待弹出层 -->
+		<div class="wait-wrapper">
+			<div class="wait-main">
+				<div>倒计时<span>58</span>秒</div>
+				<div>该步骤需工作人员授权,<br>请联系工作人员</div>
+				<div>
+					<div class="border wait-btn-retry">重试</div>
+					<div class="border wait-btn-cancel">取消</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
-	import {mapMutations} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -53,6 +62,7 @@
 				zoomInOut: 0,
 				dialogVisible: false,
 				pageTurn: false,
+				
 			};
 		},
 		computed: {
@@ -65,7 +75,6 @@
 			}
 		},
 		methods: {
-			...mapMutations(['changeCountDown','changeNowStep']),
 			handleZoomOut() {
 				if (this.zoomInOut < 3) return this.zoomInOut++;
 				this.$message('无法放大了');
@@ -80,22 +89,8 @@
 			handlePageTurn() {
 				this.pageTurn = !this.pageTurn;
 			},
-			disagree() {
-				this.$confirm('您确定不同意合约吗?','提示',{
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(()=>{
-					this.$message('您已取消合约');
-					this.changeCountDown(-1);
-					this.changeNowStep(1);
-					this.$router.push('/plugin');
-				}).catch(()=>{});
-			},
-			agree() {
-				this.changeCountDown(120);
-				this.changeNowStep(5);
-				this.$router.push('/sms');
+			nextStep() {
+				
 			},
 		},
 	};
@@ -108,5 +103,67 @@
 		overflow: auto;
 		display: flex;
 		flex-wrap: wrap;
+	}
+	.wait-wrapper{
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background-color: rgba(0,0,0,0.7);
+		z-index: 2;
+		.wait-main{
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%,-50%);
+			background-color: #FFFFFF;
+			background-color: #FFFFFF;
+			width: 750px;
+			height: 450px;
+			&>div:nth-of-type(1){
+				color: rgb(43,124,211);
+				text-align: right;
+				font-size: 23px;
+				letter-spacing: 1px;
+				padding-right: 25px;
+				margin-top: 10px;
+				&>span{
+					color: rgb(253,99,99);
+				}
+			}
+			&>div:nth-of-type(2){
+				text-align: center;
+				font-size: 24px;
+				letter-spacing: 2px;
+				margin-top: 100px;
+			}
+			&>div:nth-of-type(3){
+				display: flex;
+				justify-content: space-around;
+				margin-top: 100px;
+				&>div{
+					width: 130px;
+					height: 45px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					cursor: pointer;
+					transition: all .3s;
+					border-radius: 5px;
+				}
+			}
+		}
+	}
+	.wait-btn-retry{
+		color: #ccc;
+	}
+	.wait-btn-cancel{
+		background-color: rgb(0,68,166);
+		color: #FFFFFF;
+		&:hover{
+			background-color: rgba(0,68,166,0.7);
+		}
 	}
 </style>

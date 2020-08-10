@@ -13,6 +13,7 @@
 		left: 0;
 		background: url(assets/img/bg_main.jpg) no-repeat;
 		background-size: 100% 100%; 
+		overflow: auto;
 	}
 	button:focus{
 		outline: none!important;

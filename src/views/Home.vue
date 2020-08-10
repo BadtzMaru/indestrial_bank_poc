@@ -13,8 +13,8 @@
 			<!-- 顶部右边 -->
 			<el-col :span="8">
 				<div class="header-height d-flex flex-column a-end j-center pr-4">
-					<div class="font-md" style="color: rgb(181,219,255);">超时倒计时<span class="mx-2" style="color: rgb(255,93,91);">38</span>秒</div>
-					<div class="text-white font-sm" style="letter-spacing: 2px;">2020年08月05日 11:49:30</div>
+					<div class="font-md" style="color: rgb(181,219,255);">超时倒计时<span class="mx-2" style="color: rgb(255,93,91);">{{countDown===-1?'--':countDown}}</span>秒</div>
+					<div class="text-white font-sm" style="letter-spacing: 2px;">{{nowTime}}</div>
 				</div>
 			</el-col>
 		</el-row>
@@ -102,9 +102,38 @@
 </template>
 
 <script>
-export default {
-	
-}
+	import {mapState,mapMutations} from 'vuex';
+	export default {
+		data() {
+			return {
+				nowTime: '2020年08月10日 12:00:00',
+			};
+		},
+		computed: {
+			...mapState(['nowStep','countDown']),
+		},
+		methods: {
+			...mapMutations(['changeCountDown','doCountDown','clearUp']),
+		},
+		beforeCreate() {
+			this.nowTime = this.$F.getNowTime();
+		},
+		mounted() {
+			setInterval(()=>{
+				this.nowTime = this.$F.getNowTime();
+				if (this.countDown>0) {
+					this.doCountDown();
+				} else if (this.countDown === 0) {
+					this.clearUp();
+					this.$message({
+						message: '您的操作超时了',
+						type: 'warning',
+					});
+					this.$router.push('/plugin');
+				}
+			},1000);
+		}
+	}
 </script>
 
 <style lang="less">
@@ -152,6 +181,7 @@ export default {
 		background-color: rgb(125,139,182);
 		height: 3px;
 		top: 38%;
+		left: 0;
 	}
 	.step-item{
 		padding-top: 15px;
@@ -201,7 +231,10 @@ export default {
 		position: absolute;
 		width: 94%;
 		animation: turn 2s linear infinite;
+		left: 1px;
+		top: 2px;
 	}
+	
 	@keyframes turn{
 		0%{-webkit-transform:rotate(0deg);}
 		25%{-webkit-transform:rotate(90deg);}
