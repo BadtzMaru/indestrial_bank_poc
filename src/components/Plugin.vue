@@ -8,7 +8,7 @@
 			<div class="flex-1">
 				<div class="page-title">请插入银行卡</div>
 				<div class="d-flex a-center j-center pt-4">
-					<img src="../assets/img/bank_card.jpg" class="plugin_card" draggable="false">
+					<img src="../assets/img/bank_card.png" class="plugin_card" draggable="false">
 				</div>
 			</div>
 			<div class="flex-1">
