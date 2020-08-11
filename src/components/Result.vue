@@ -10,39 +10,65 @@
 				<div class="result-msg">您的短信口令已开通成功!</div>
 				<el-form ref="smsForm" label-width="120px">
 					<el-form-item label="客户姓名: " prop="name">
-						<span class="ml-3">{{smsForm.name}}</span>
+						<span class="ml-3">{{name}}</span>
 					</el-form-item>
 					<el-form-item label="借记卡号: " prop="cardID">
-						<span class="ml-3">{{smsForm.cardID}}</span>
+						<span class="ml-3">{{cardID}}</span>
 					</el-form-item>
 					<el-form-item label="手机号: " prop="phone">
-						<span class="ml-3">{{smsForm.phone}}</span>
+						<span class="ml-3">{{phone|phoneAnonymity}}</span>
 					</el-form-item>
 				</el-form>
 			</div>
 		</div>
 		<!-- 按钮区域 -->
 		<div class="btn-wrapper d-flex j-sb a-center" style="padding-left: 70px;padding-right: 70px;">
-			<div class="stepBtn stepBtn-danger">打印客户凭条</div>
-			<div class="stepBtn stepBtn-primary">不打印</div>
+			<div class="stepBtn stepBtn-danger" @click="handlePrint">打印客户凭条</div>
+			<div class="stepBtn stepBtn-primary" @click="handleNoPrint">不打印</div>
 		</div>
 	</div>
 </template>
 
 <script>
+	import {mapState,mapMutations} from 'vuex';
 	export default {
 		data() {
 			return {
-				smsForm: {
-					name: '张三',
-					cardID: '6225487522215484326',
-					phone: '159****0339',
-				},
+				
 			};
 		},
-		methods: {
-			
+		computed: {
+			...mapState(['name','cardID','phone']),
 		},
+		filters: {
+			phoneAnonymity(val) {
+				return val.substr(0,3)+'****'+val.substr(7);
+			},
+		},
+		methods: {
+			...mapMutations(['changeCountDown','changeNowStep']),
+			handleNoPrint() {
+				this.$confirm('您确定不打印凭证吗?').then(()=>{
+					this.changeCountDown(-1);
+					this.changeNowStep(1);
+					this.$router.push('/plugin');
+				}).catch(()=>{});
+			},
+			handlePrint() {
+				this.$message({
+					message: '打印成功(模拟)',
+					type: 'success',
+				});
+				this.changeCountDown(-1);
+				this.changeNowStep(1);
+				this.$router.push('/plugin');
+			},
+		},
+		created() {
+			if (this.$store.state.nowStep !== 9) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 

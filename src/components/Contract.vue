@@ -40,7 +40,7 @@
 </template>
 
 <script>
-	import {mapMutations} from 'vuex';
+	import {mapState,mapMutations} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -56,6 +56,7 @@
 			};
 		},
 		computed: {
+			...mapState(['nowStep']),
 			zoomInOutStyle() {
 				if (this.pageTurn) return {width:'50%'};
 				if (this.zoomInOut === 1) return  {width: '120%'};
@@ -98,6 +99,11 @@
 				this.$router.push('/sms');
 			},
 		},
+		created() {
+			if (this.nowStep !== 4) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 

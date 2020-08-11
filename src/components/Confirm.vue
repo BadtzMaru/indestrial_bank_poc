@@ -60,6 +60,11 @@
 				this.$router.push('/camera');
 			},
 		},
+		created() {
+			if (this.$store.state.nowStep !== 6) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 

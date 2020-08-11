@@ -23,7 +23,7 @@
 		</div>
 		<!-- 按钮区域 -->
 		<div class="btn-wrapper d-flex j-sb a-center" style="padding-left: 70px;padding-right: 70px;">
-			<div class="stepBtn stepBtn-danger">打印</div>
+			<div class="stepBtn stepBtn-danger" @click="handlePrint">打印</div>
 			<div class="stepBtn stepBtn-primary" @click="nextStep">确定</div>
 		</div>
 		<!-- 条约弹出层 -->
@@ -36,13 +36,13 @@
 			</div>
 		</el-dialog>
 		<!-- 等待弹出层 -->
-		<div class="wait-wrapper">
+		<div class="wait-wrapper" :class="waitShow?'':'d-none'">
 			<div class="wait-main">
-				<div>倒计时<span>58</span>秒</div>
+				<div>倒计时<span>{{waitCountDown===-1?'--':waitCountDown}}</span>秒</div>
 				<div>该步骤需工作人员授权,<br>请联系工作人员</div>
 				<div>
-					<div class="border wait-btn-retry">重试</div>
-					<div class="border wait-btn-cancel">取消</div>
+					<div class="border " :class="waitRetry?'wait-btn-cancel':'wait-btn-retry'" @click="handleWaitRetry">重试</div>
+					<div class="border wait-btn-cancel" @click="handleWaitCancel">取消</div>
 				</div>
 			</div>
 		</div>
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+	import {mapMutations} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -62,7 +63,10 @@
 				zoomInOut: 0,
 				dialogVisible: false,
 				pageTurn: false,
-				
+				waitShow: false,
+				waitCountDown: -1,
+				waitSI: -1,
+				waitRetry: false,
 			};
 		},
 		computed: {
@@ -75,6 +79,7 @@
 			}
 		},
 		methods: {
+			...mapMutations(['changeCountDown','changeNowStep','changeCountPause']),
 			handleZoomOut() {
 				if (this.zoomInOut < 3) return this.zoomInOut++;
 				this.$message('无法放大了');
@@ -89,10 +94,63 @@
 			handlePageTurn() {
 				this.pageTurn = !this.pageTurn;
 			},
-			nextStep() {
-				
+			handlePrint() {
+				this.$message({
+					message: '预留打印接口',
+				});
 			},
+			handleWaitRetry() {
+				if (this.waitRetry) {
+					this.nextStep();
+				} else {
+					this.$message({
+						message: '暂时无法重试',
+						type: 'info',
+					});
+				}
+			},
+			nextStep() {
+				this.waitRetry = false;
+				this.waitShow = true;
+				this.changeCountDown(120);
+				this.changeCountPause(true);
+				this.waitCountDown = 120;
+				this.waitSI = setInterval(()=>{
+					if (this.waitCountDown > 0) {
+						this.waitCountDown--;
+					} else if (this.waitCountDown === 0) {
+						this.$message({
+							message: '处理超时请重试',
+							type: 'warning',
+						});
+						this.waitCountDown = -1;
+						clearInterval(this.waitSI);
+						this.changeCountPause(false);
+						this.waitRetry = true;
+					}
+				},1000);
+				// 模拟工作人员授权成功
+				setTimeout(()=>{
+					this.changeCountPause(false);
+					this.changeCountDown(120);
+					this.changeNowStep(9);
+					this.$router.push('/result');
+				},5000);
+			},
+			handleWaitCancel() {
+				this.$confirm('您确定要取消等待吗?').then(()=>{
+					this.waitShow = false;
+					clearInterval(this.waitSI);
+					this.waitCountDown = -1;
+					this.changeCountPause(false);
+				}).catch(()=>{});
+			}
 		},
+		created() {
+			if (this.$store.state.nowStep !== 8) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 
@@ -105,7 +163,6 @@
 		flex-wrap: wrap;
 	}
 	.wait-wrapper{
-		display: none;
 		position: fixed;
 		top: 0;
 		left: 0;

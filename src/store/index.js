@@ -7,6 +7,8 @@ export default new Vuex.Store({
 	state: {
 		// 倒计时秒数
 		countDown: -1,
+		// 倒计时暂停
+		countPause: false,
 		// 当前步骤
 		nowStep: 1,
 		// 银行卡帐号
@@ -47,6 +49,9 @@ export default new Vuex.Store({
 		changeCameraImg(state,val) {
 			state.cameraImg = val;
 		},
+		changeCountPause(state,val) {
+			state.countPause = val;
+		},
 		doCountDown(state) {
 			state.countDown--;
 		},
@@ -57,6 +62,8 @@ export default new Vuex.Store({
 			state.password = '';
 			state.identity = '';
 			state.phone = '';
+			state.promoter = '';
+			state.cameraImg = '';
 		},
 	},
 });

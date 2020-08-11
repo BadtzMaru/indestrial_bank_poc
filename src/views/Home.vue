@@ -26,8 +26,8 @@
 					<img src="../assets/img/sms.png" style="width: 260px;" draggable="false">
 					<div class="my-3" style="color: rgb(132,142,173);letter-spacing: 2px;font-size: 28px;"><i class="el-icon-chat-line-square mr-2"></i>功能介绍</div>
 					<div style="color: rgb(132,142,173);font-size: 19px;width: 260px;letter-spacing: 2px;">短信口令是指在使用兴业银行电子银行进行对外支付时,使用手机短信配合验证的一种交易确认方式</div>
-					<div class="main-left-btn" style="margin-top: 80px;"><i class="el-icon-service mr-2"></i>视频服务</div>
-					<div class="main-left-btn mt-4"><i class="el-icon-menu mr-2"></i>返回首页</div>
+					<div class="main-left-btn" style="margin-top: 80px;" @click="videoService"><i class="el-icon-service mr-2"></i>视频服务</div>
+					<div class="main-left-btn mt-4" @click="handleGoHome"><i class="el-icon-menu mr-2"></i>返回首页</div>
 				</div>
 			</el-col>
 			<!-- 主体右边 -->
@@ -35,60 +35,18 @@
 				<div class="pt-3">
 					<!-- 步骤显示 -->
 					<div class="d-flex step-wrapper">
-						<div class="step-item">
-							<div class="step-top-wrapper" >
+						<div class="step-item" v-for="(item,index) in stepArr" :key="index">
+							<div class="step-top-wrapper" v-if="nowStep>index+1">
 								<div class="step-circle step-success"><i class="el-icon-check"></i></div>
 							</div>
-							<div class="step-text">读取卡片</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper" >
-								<div class="step-circle step-success"><i class="el-icon-check"></i></div>
-							</div>
-							<div class="step-text">输入密码</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper" >
-								<div class="step-circle setp-ing">3</div>
+							<div class="step-top-wrapper" v-if="nowStep===index+1">
+								<div class="step-circle setp-ing">{{index+1}}</div>
 								<img src="../assets/img/step-loading.png" class="step-loading-img" draggable="false">
 							</div>
-							<div class="step-text step-text-ing">读取身份</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper" >
-								<div class="step-circle setp-wait">4</div>
+							<div class="step-top-wrapper" v-if="nowStep<index+1">
+								<div class="step-circle setp-wait">{{index+1}}</div>
 							</div>
-							<div class="step-text">合约</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper" >
-								<div class="step-circle setp-wait">5</div>
-							</div>
-							<div class="step-text">短信认证</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper">
-								<div class="step-circle setp-wait">6</div>
-							</div>
-							<div class="step-text">确认开通</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper">
-								<div class="step-circle setp-wait">7</div>
-							</div>
-							<div class="step-text">影像采集</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper" >
-								<div class="step-circle setp-wait">8</div>
-							</div>
-							<div class="step-text">申请单打印</div>
-						</div>
-						<div class="step-item">
-							<div class="step-top-wrapper" >
-								<div class="step-circle setp-wait">9</div>
-							</div>
-							<div class="step-text">开通结果</div>
+							<div class="step-text" :class="nowStep==index+1?'step-text-ing':''">{{item.text}}</div>
 						</div>
 						<!-- 分隔符 -->
 						<div class="step_line"></div>
@@ -107,13 +65,40 @@
 		data() {
 			return {
 				nowTime: '2020年08月10日 12:00:00',
+				stepArr: [
+					{text: '读取卡片'},
+					{text: '输入密码'},
+					{text: '读取身份'},
+					{text: '合约'},
+					{text: '短信认证'},
+					{text: '确认开通'},
+					{text: '影像采集'},
+					{text: '申请单打印'},
+					{text: '开通结果'},
+				]
 			};
 		},
 		computed: {
-			...mapState(['nowStep','countDown']),
+			...mapState(['nowStep','countDown','countPause']),
 		},
 		methods: {
 			...mapMutations(['changeCountDown','doCountDown','clearUp']),
+			handleGoHome() {
+				if (this.nowStep == 1) {
+					this.$message('已经在首页了');
+				} else {
+					this.$confirm('您确定要放弃所有操作返回首页吗?').then(()=>{
+						this.clearUp();
+						this.$router.push('/plugin');
+					}).catch(()=>{})
+				}
+			},
+			videoService() {
+				this.$message({
+					message: '视频服务正在开发中...',
+					type: 'info',
+				});
+			}
 		},
 		beforeCreate() {
 			this.nowTime = this.$F.getNowTime();
@@ -121,7 +106,7 @@
 		mounted() {
 			setInterval(()=>{
 				this.nowTime = this.$F.getNowTime();
-				if (this.countDown>0) {
+				if (this.countDown>0 && !this.countPause) {
 					this.doCountDown();
 				} else if (this.countDown === 0) {
 					this.clearUp();

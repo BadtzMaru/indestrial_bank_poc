@@ -24,14 +24,14 @@
 		<!-- 按钮区域 -->
 		<div class="btn-wrapper d-flex j-sb a-center" style="padding-left: 70px;padding-right: 70px;">
 			<div class="stepBtn stepBtn-danger" @click="resetPassword">重新输入</div>
-			<div class="stepBtn " :class="ruleFlag?'stepBtn-primary':'stepBtn-disable'" @click="nextStep">确定</div>
+			<div class="stepBtn" :class="ruleFlag?'stepBtn-primary':'stepBtn-disable'" @click="nextStep">确定</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import numberKeybord from '@/components/number_keybord.vue';
-	import {mapMutations} from 'vuex';
+	import {mapState,mapMutations} from 'vuex';
 	export default {
 		components: {
 			numberKeybord,
@@ -57,6 +57,9 @@
 				},
 				ruleFlag: false,
 			};
+		},
+		computed: {
+			...mapState(['nowStep']),
 		},
 		methods: {
 			...mapMutations(['changePassword','changeCountDown','changeNowStep']),
@@ -109,6 +112,11 @@
 				}
 			},
 		},
+		created() {
+			if (this.nowStep !== 2) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 

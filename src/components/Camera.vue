@@ -59,11 +59,14 @@
 					var tempImg = this.img2;
 				}
 				if (!tempImg) {
-					return this.$message({
-						message: '您还尚未拍摄照片',
-						type: 'warning',
-					});
+					this.$confirm('您确定不采集照片进入下一步吗?').then(()=>{
+						this.goNext(tempImg);
+					}).catch(()=>{});
+				} else {
+					this.goNext(tempImg);
 				}
+			},
+			goNext(tempImg) {
 				this.changeCameraImg(tempImg);
 				this.changeCountDown(120);
 				this.changeNowStep(8);
@@ -108,6 +111,11 @@
 					this.img2 = document.getElementById('canvas2').toDataURL();
 				}
 				this.imgFlag = !this.imgFlag;
+			}
+		},
+		created() {
+			if (this.$store.state.nowStep !== 7) {
+				this.$router.push('/');
 			}
 		}
 	};

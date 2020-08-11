@@ -31,7 +31,7 @@
 
 <script>
 	import numberKeybord from '@/components/number_keybord.vue';
-	import {mapMutations} from 'vuex';
+	import {mapState,mapMutations} from 'vuex';
 	export default {
 		components: {
 			numberKeybord,
@@ -57,6 +57,9 @@
 				},
 				ruleFlag: false,
 			};
+		},
+		computed: {
+			...mapState(['nowStep']),
 		},
 		methods: {
 			...mapMutations(['changeCountDown','changeIdentity','changeNowStep']),
@@ -103,6 +106,11 @@
 				this.$router.push('/contract');
 			},
 		},
+		created() {
+			if (this.nowStep !== 3) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 

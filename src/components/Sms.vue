@@ -21,7 +21,7 @@
 						<el-button @click="getCode" class="ml-5" type="primary" :disabled="codeFlag">{{codeMsg}}</el-button>
 					</el-form-item>
 					<el-form-item label="推广人 " prop="code">
-						<el-input class="ml-3" style="width: 280px;" v-model="smsForm.promoter"></el-input>
+						<el-input @input="handleInputPromoter" class="ml-3" style="width: 280px;" v-model="smsForm.promoter"></el-input>
 					</el-form-item>
 				</el-form>
 			</div>
@@ -114,7 +114,18 @@
 					this.$router.push('/confirm');
 				}
 			},
+			handleInputPromoter() {
+				if (this.smsForm.promoter.length>10) {
+					this.smsForm.promoter = this.smsForm.promoter.substr(0,10);
+				}
+				this.smsForm.promoter = this.smsForm.promoter.replace(/\s/g,'');
+			},
 		},
+		created() {
+			if (this.$store.state.nowStep != 5) {
+				this.$router.push('/');
+			}
+		}
 	};
 </script>
 
