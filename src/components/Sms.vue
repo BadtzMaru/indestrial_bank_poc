@@ -14,7 +14,7 @@
 						<span class="ml-3">{{cardID}}</span>
 					</el-form-item>
 					<el-form-item label="手机号: " prop="phone">
-						<span class="ml-3">{{phone|phoneAnonymity}}</span>
+						<span class="ml-3">{{doPhoneAnonymity(phone)}}</span>
 					</el-form-item>
 					<el-form-item label="认证码: " prop="code">
 						<el-input @input="handleCodeInput" class="ml-3" style="width: 280px;" v-model="smsForm.code"></el-input>
@@ -65,6 +65,9 @@
 		},
 		methods: {
 			...mapMutations(['changePromoter','changeCountDown','changeNowStep']),
+			doPhoneAnonymity(val) {
+				return val.substr(0,3)+'****'+val.substr(7);
+			},
 			getCode() {
 				if (this.codeFlag) {
 					this.$message({

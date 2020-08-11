@@ -16,7 +16,7 @@
 						<span class="ml-3">{{cardID}}</span>
 					</el-form-item>
 					<el-form-item label="手机号: " prop="phone">
-						<span class="ml-3">{{phone|phoneAnonymity}}</span>
+						<span class="ml-3">{{doPhoneAnonymity(phone)}}</span>
 					</el-form-item>
 				</el-form>
 			</div>
@@ -47,6 +47,9 @@
 		},
 		methods: {
 			...mapMutations(['changeCountDown','changeNowStep']),
+			doPhoneAnonymity(val) {
+				return val.substr(0,3)+'****'+val.substr(7);
+			},
 			handleNoPrint() {
 				this.$confirm('您确定不打印凭证吗?').then(()=>{
 					this.changeCountDown(-1);

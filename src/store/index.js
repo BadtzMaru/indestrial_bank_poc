@@ -61,7 +61,7 @@ export default new Vuex.Store({
 			state.cardID = '';
 			state.password = '';
 			state.identity = '';
-			state.phone = '';
+			state.phone = '15980260339';
 			state.promoter = '';
 			state.cameraImg = '';
 		},

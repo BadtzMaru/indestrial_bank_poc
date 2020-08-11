@@ -67,6 +67,7 @@
 				waitCountDown: -1,
 				waitSI: -1,
 				waitRetry: false,
+				mockST: -1,
 			};
 		},
 		computed: {
@@ -130,7 +131,7 @@
 					}
 				},1000);
 				// 模拟工作人员授权成功
-				setTimeout(()=>{
+				this.mockST = setTimeout(()=>{
 					this.changeCountPause(false);
 					this.changeCountDown(120);
 					this.changeNowStep(9);
@@ -143,6 +144,7 @@
 					clearInterval(this.waitSI);
 					this.waitCountDown = -1;
 					this.changeCountPause(false);
+					clearTimeout(this.mockST);
 				}).catch(()=>{});
 			}
 		},
