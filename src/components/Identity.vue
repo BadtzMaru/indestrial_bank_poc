@@ -100,6 +100,17 @@
 				this.doReg();
 			},
 			nextStep() {
+				if (!this.form.identity) {
+					return this.$message({
+						message: '身份证不能为空',
+						type: 'warning',
+					});
+				} else if (!/^\d{17}[\dX]$/.test(this.form.identity)) {
+					return this.$message({
+						message: '身份证格式不正确',
+						type: 'warning',
+					});
+				}
 				this.changeIdentity(this.form.identity);
 				this.changeCountDown(120);
 				this.changeNowStep(4);
